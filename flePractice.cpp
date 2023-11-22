@@ -1,64 +1,53 @@
+
 #include <iostream>
+#include <cstring>
 #include <fstream>
-#include <sstream>
-#include <string>
 
 using namespace std;
-struct Imran {
+void inputlocation(char Location[])
+{
+	cout << "Enter the Location of the file" <<
+		" for example D:\\folder\\file" << endl;
+	cin.getline(Location, 200);
+}
+void inputDestination(char  destination[])
+{
+	cout << "Enter the Destination of the file " << endl;
+	cin.getline(destination, 200);
+}
+void getLocations(char location[], char destination[])
+{
+	do
+	{
+		inputlocation(location);
+		inputDestination(destination);
+	} while (strcmp(location, destination) == 0);
 
-    int Cols, Rows, Depth;
+}
 
-    int Data[400][400];
-    char comment[100];
-    char magic[10];
-    void Load(char c[]){
-        //
-        // file read 
-
-        })
+struct image
+{
+	int Col, Row, Depth;
+	int Data[400][400];
+	char Comment[100];
+	char MagicNumber[10];
+	void Load(char FileLocation[])
+	{
+		ifstream CIN(FileLocation);
+		CIN.getline(MagicNumber, 4);
+		for (int i = 0; Comment[i] != '\0'; i++)
+		{
+			CIN >> Comment[i];
+		}
+		CIN >> Row >> Col >> Depth;
+	}
 };
 
-int main() {
-    /*ifstream imageFile("D:/designs/ideogram3.jpeg", ios::binary);
-    ofstream textFile("D:/file.txt");
-    
+int main()
+{
+	image IM1, IM2;
+	char Location[200], Destination[200];
+	getLocations(Location, Destination);
+	IM1.Load(Location);
 
-    if (!imageFile.is_open() || !textFile.is_open()) {
-        cout << "Unable to open file!" << endl;
-        return 1;
-    }
-
-    char byte;
-    textFile << " ConverterX\n size\n";
-    while (imageFile.get(byte)) {
-        textFile << static_cast<unsigned int>(static_cast<unsigned char>(byte)) << " ";
-    } 
-    imageFile.close();
-    textFile.close();
-
-
-    string line;
-    int rows = 0;
-    int columns = 0;
-    ifstream text("D:/file.txt");
-   
-    while (getline(text, line)) {
-        istringstream iss(line);
-        int count = 0;
-        while (iss >> count) {
-            ++columns;
-        }
-        ++rows;
-    }
-
-    text.close();
-
-    cout << "Rows: " << rows << endl;
-    cout << "Columns: " << columns / rows << endl;*/
-
-    
-    
-
-
-    return 0;
 }
