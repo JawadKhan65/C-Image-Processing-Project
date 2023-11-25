@@ -42,15 +42,16 @@ string Extraction(char location[200]) {
             break;
         }
     }
+    cout << "Patched";
     return add.substr(0, catched); //substring the array to the last occured /
-}
-// Manipulation
 
-void VerticalFlip(int img[400][400]);
-void Transpose(int img[400][400]);
-void centerFlip(int image[400][400]);
-// Copy & Delete
-void Delete(char location[200]);
+}
+
+
+
+
+
+
 
 
 struct image
@@ -72,19 +73,20 @@ struct image
             CIN.getline(MagicNumber, 4);
             CIN.getline(Comment, 99);
             CIN >> Col >> Row >> Depth;
-            cout << Col << Row << Depth;
+            
 
             for (int r = 0; r < Row; r++)
             {
                 for (int c = 0; c < Col; c++)
                 {
                     CIN >> Data[r][c];
-                    cout << Data[r][c]<<"  ";
+                  
                 }
                
 
             }
-            cout << endl << "Done with it" << endl;;
+            
+            
         }
         else
         {
@@ -109,7 +111,7 @@ struct image
         {
             for (int c = 0; c < Col; c++)
             {
-                Copy << Data[r][c];
+                Copy << Data[r][c]<<" ";
                 
             }
             Copy << endl;
@@ -118,8 +120,79 @@ struct image
     };
 
     void SaveAs(char destination[200]) {
+        ofstream Saveas(destination);
+        Saveas << "P2\n#Created by Hitler" << endl;
+        Saveas << Col << " " << Row << endl
+            << Depth << endl;
+        for (int r = 0; r < Row; r++)
+        {
+            for (int c = 0; c < Col; c++)
+            {
+                Saveas << Data[r][c];
 
+            }
+            Saveas << endl;
+        }
+        Saveas.close();
     };
+    void Delete() {
+
+        cout << "Enter file location to confirm Deletion : " << endl;
+        char location[200];
+        cin.getline(location, 200);
+        cout << "this is location : " << location <<"  are you sure? enter y/n " << endl;
+        char yesNo;
+        cin>>yesNo;
+        cin.ignore();
+        if (yesNo == 'y' || yesNo == 'Y') {
+            if (remove(location) != 0) {
+                perror("Error deleting file ");
+            }
+            else {
+                cout << "File deleted successfully " << endl;
+            }
+        }
+        
+        
+    };
+    void VerticalFlip() {// it do nothing else taking the center and swapping below and above part
+        int temp;
+        for (int i = 0; i < Row / 2; i++) {
+            for (int j = 0; j < Col; j++) {
+                temp = Data[i][j];
+                Data[i][j] = Data[Row- 1- i][j];
+                Data[Row -1- i][j] = temp;
+            }
+        }
+    };
+    void RHorizontalFlip() { // it do nothing else taking the center and swapping left and right part
+        int temp;
+        for (int i = 0; i < Row; i++)
+        {
+            for (int j = 0; j < Col/2; j++) {
+                temp = Data[i][j];
+                Data[i][j] = Data[i][Col-1-j];
+                Data[i][Col - 1 - j] = temp;
+
+            }
+        }
+    };
+    void NegativeEffect() {
+        for (int i = 0; i < Row; ++i) {
+            for (int j = 0; j < Col; ++j) {
+                // Inverting pixel values by subtracting them from the maximum value
+                Data[i][j] = Depth - Data[i][j]; // in negative actually the rgb value is inverted
+                // 
+            }
+        }
+    }
+
+
+
+
+
+
+   
 };
 
 int main()
@@ -128,9 +201,10 @@ int main()
     char Location[200], Destination[200];
     getLocations(Location, Destination);
     IM1.Load(Location); // Loading image
+    IM1.VerticalFlip();
+    IM1.RHorizontalFlip();
+    IM1.NegativeEffect();
     IM1.Copy(Location);
-    
-    
 
     return 0;
 }
