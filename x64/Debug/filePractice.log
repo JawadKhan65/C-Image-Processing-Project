@@ -1,3 +1,5 @@
 ﻿  flePractice.cpp
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(36,16): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(37,16): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(210,32): warning C4018: '<': signed/unsigned mismatch
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(213,32): warning C4018: '>': signed/unsigned mismatch
   filePractice.vcxproj -> D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\x64\Debug\filePractice.exe
