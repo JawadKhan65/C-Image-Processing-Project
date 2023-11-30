@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstring>
 #include <string>
+#include <vector>
 #include <cmath>
 #include <fstream>
 
@@ -52,50 +53,44 @@ string Extraction(char location[200]) {
 
 struct Image
 {
+    char ImageFileName[100];
+    vector<vector<int>> Data;
     int Col, Row, Depth;
-    unsigned int Data[400][400];
-    char Comment[100];
-    char MagicNumber[10];
+    vector<char> comment;
 
-    int Load(char FileLocation[200])
-    {
-       
-        
-        ifstream CIN;   
-        CIN.open(FileLocation);
+    bool imageLoaded;
+    bool imageModified;
 
-        if (CIN.is_open())
-        {
-            CIN.getline(MagicNumber, 4);
-            CIN.getline(Comment, 99);
-            CIN >> Col >> Row >> Depth;
-            
 
-            for (int r = 0; r < Row; r++)
-            {
-                for (int c = 0; c < Col; c++)
-                {
-                    CIN >> Data[r][c];
-                  
-                }
-               
+    int Load(char ImageName[]) {
 
-            }
-            
-            
-        }
-        else
-        {
-            cout << "File failed to open." << endl;
+        ifstream FCIN(ImageName);
+
+        if (!FCIN.is_open())
             return -1;
-            // Handle the failure to open the file
-        }
-        if (CIN.fail())
+
+        char MagicNumber[5];
+        char Comment[100];
+
+        FCIN.getline(MagicNumber, 4);
+        FCIN.getline(Comment, 100);
+        FCIN >> Col >> Row >> Depth;
+
+        Data.clear();
+        Data.resize(Row, vector<int>(Col, 0));
+
+        for (int r = 0; r < Row; r++)
+            for (int c = 0; c < Col; c++)
+                FCIN >> Data[r][c];
+
+        if (FCIN.fail())
             return -2;
 
-        CIN.close();
+        FCIN.close();
+        imageLoaded = true;
+        imageModified = false;
+        
         return 0;
-
     }
     void Copy(char FileLocation[])
     {
@@ -264,10 +259,10 @@ struct Image
         }
         // Now, the Data array holds the adjusted derivative values within 0-255 range
     }
-    void IncreaseBrightness() {
+    void IncreaseBrightness(int factor) {
         for (int i = 0; i < Row; i++) {
             for (int j = 0; j < Col; j++) {
-                int newValue = Data[i][j] * 3;
+                int newValue = Data[i][j] * factor;
                 Data[i][j] = (newValue > 255) ? 255 : newValue;
             }
         }
@@ -362,50 +357,287 @@ struct Image
             }
         }
     }
-    
-    void RotateImageByAngle(double angle)
+    void RotateImageAntiClockwise()
     {
+        int temp;
+        for (int layer = 0; layer < Row / 2; layer++) {
+            int first = layer;
+            int last = Row - 1 - layer;
+            for (int i = first; i < last; i++) {
+                int offset = i - first;
+                // Save top
+                temp = Data[i][first];
+                // Left -> Top
+                Data[i][first] = Data[first][last - offset];
+                // Bottom -> Left
+                Data[first][last - offset] = Data[last-offset][last];
+                // Right -> Bottom
+                Data[last - offset][last] = Data[last][i];
+                // Top -> Right
+                Data[last][i] = temp;
+            }
+        }
+    }
+    
+    void RotateImageByAngle(double angle) {
         const double PI = 3.141519;
         double radians = angle * PI / 180.0; // Convert angle to radians
         double cosine = cos(radians);
         double sine = sin(radians);
 
         // Create a temporary matrix to store rotated values
-        
+        int** rotatedData = new int* [Row];
+        for (int i = 0; i < Row; i++) {
+            rotatedData[i] = new int[Col];
+        }
 
         // Find the center of the image
-        double cx = static_cast<double>(Col - 1) / 2.0; // Col and row are int so make
-        double cy = static_cast<double>(Row - 1) / 2.0;//them double
+        double cx = static_cast<double>(Col - 1) / 2.0;
+        double cy = static_cast<double>(Row - 1) / 2.0;
 
         // Traverse the original matrix and apply rotation
-        for (int y = 0; y < Row; ++y)
-        {
-            for (int x = 0; x < Col; ++x)
-            {
+        for (int y = 0; y < Row; y++) {
+            for (int x = 0; x < Col; x++) {
                 // Translate coordinates to the center
-                double xFromCenter = x - cx;// image - center allong x
-                double yFromCenter = y - cy;//image - center along y
+                double xFromCenter = x - cx;
+                double yFromCenter = y - cy;
 
                 // Apply rotation formula
-                int newX = static_cast<int>(xFromCenter * cosine - yFromCenter * sine + cx); 
-                int newY = static_cast<int>(xFromCenter * sine + yFromCenter * cosine + cy);
+                double newX = xFromCenter * cosine - yFromCenter * sine + cx;
+                double newY = xFromCenter * sine + yFromCenter * cosine + cy;
 
                 // Check bounds and assign values to the temporary matrix
-                if (newX >= 0 && newX < Col && newY >= 0 && newY < Row)
-                {
-                    Data[newY][newX] = Data[y][x];
+                if (newX >= 0 && newX < Col && newY >= 0 && newY < Row) {
+                    rotatedData[static_cast<int>(newY)][static_cast<int>(newX)] = Data[y][x];
                 }
             }
         }
 
+        // Copy rotated data back to the original matrix
+        for (int y = 0; y < Row; ++y) {
+            for (int x = 0; x < Col; ++x) {
+                Data[y][x] = rotatedData[y][x];
+            }
+        }
+
+        // Deallocate temporary matrix
+        for (int i = 0; i < Row; ++i) {
+            delete[] rotatedData[i];
+        }
+        delete[] rotatedData;
+    }
+    // Assuming ImageData represents the image as a 2D array
+
+// Apply a general linear filter to the image
+    void LinearFilter(int input) {
         
-       
+        double kernel[3][3];
+        
+        if (input == 1 )
+        {
+            ifstream Sharpen("D:/designs/sharpen.txt");
+            if (Sharpen.is_open()) {
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (!(Sharpen >> kernel[i][j])) {
+                            // Handle the case where there are not enough values in the file
+                            // Or an error occurs while reading from the file
+                            // This might involve breaking out of the loop or handling the error accordingly
+                        }
+                    }
+                }
+            }
+            Sharpen.close(); // Close the file after reading
+        }
+        else if (input == 2 )
+        {
+            ifstream Blur("D:/designs/blur.txt");
+            if (Blur.is_open()) {
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (!(Blur >> kernel[i][j])) {
+                            // Handle the case where there are not enough values in the file
+                            // Or an error occurs while reading from the file
+                            // This might involve breaking out of the loop or handling the error accordingly
+                        }
+                    }
+                }
+            }
+            Blur.close(); // Close the file after reading
+        }else if (input == 3 )
+        {
+            ifstream Edge("D:/designs/edge.txt");
+            if (Edge.is_open()) {
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (!(Edge >> kernel[i][j])) {
+                            // Handle the case where there are not enough values in the file
+                            // Or an error occurs while reading from the file
+                            // This might involve breaking out of the loop or handling the error accordingly
+                        }
+                    }
+                }
+            }
+            Edge.close(); // Close the file after reading
+        }else if (input == 4 )
+        {
+            ifstream Neg("D:/designs/negative.txt");
+            if (Neg.is_open()) {
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (!(Neg >> kernel[i][j])) {
+                            // Handle the case where there are not enough values in the file
+                            // Or an error occurs while reading from the file
+                            // This might involve breaking out of the loop or handling the error accordingly
+                        }
+                    }
+                }
+            }
+            Neg.close(); // Close the file after reading
+        }
+        
+        
+        // Printing the contents of the kernel array
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                cout << kernel[i][j] << " ";
+            }
+            cout << endl;
+        }
+        vector<vector<int>> temporary;
+        temporary.clear();
+        temporary.resize(Row, vector<int>(Col, 0));
+      
+        for (int y = 1; y < Row - 1; y++) {
+            for (int x = 1; x < Col - 1; x++) {
+                float sum = 0.0;
+
+                // Convolution: Multiply and accumulate pixel values based on the filter kernel
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        sum += Data[y + i][x + j] * kernel[i + 1][j + 1];
+                    }
+                }
+                temporary[y][x] = sum;
+
+            }
+        }
+        for (int y = 1; y < Row - 1; ++y) {
+            for (int x = 1; x < Col - 1; ++x) {
+                Data[y][x] = temporary[y][x];
+            }
+        }
+
+    }
+    void ScaleUp(vector<vector<int>>& Data, int factor) {
+        int height = Data.size();
+        int width = Data[0].size();
+
+        int scaledH = height * factor;
+        int scaledW = width * factor;
+
+        vector<vector<int>> scaledData(scaledH, vector<int>(scaledW, 0));
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                for (int p = 0; p < factor; p++) {
+                    for (int q = 0; q < factor; q++) {
+                        scaledData[i * factor + p][j * factor + q] = Data[i][j];
+                    }
+                }
+            }
+        }
+
+        Data = scaledData; // Update the original Data with the scaled-up data
+    }
+
+    void ScaleDown(vector<vector<int>>& Data, int factor) {
+        int height = Data.size();
+        int width = Data[0].size();
+
+        int scaledH = height / factor;
+        int scaledW = width / factor;
+
+        vector<vector<int>> scaledData(scaledH, vector<int>(scaledW, 0));
+
+        for (int i = 0; i < scaledH; i++) {
+            for (int j = 0; j < scaledW; j++) {
+                int sum = 0;
+                for (int k = 0; k < factor; k++) {
+                    for (int l = 0; l < factor; l++) {
+                        sum += Data[i * factor + k][j * factor + l];
+                    }
+                }
+                scaledData[i][j] = sum / (factor * factor);
+            }
+        }
+
+        Data = scaledData; // Update the original Data with the scaled data
     }
    
+    void SD(int factor) {
+        ScaleDown(Data, factor);
+    }
+    void SU(int factor) {
+        ScaleUp(Data, factor);
+    }
+    void Tobinary() {
+        // thresholding technique
+        int threshold = 130;
+        for (int i = 0; i < Row; i++)
+        {
+            for (int j = 0; j < Col; j++) {
+                Data[i][j] = (Data[i][j] > threshold) ? 1 : 0;
+            }
+        }
+    }
+    void TI(vector<vector<int>>& Data, int dx, int dy) {
+        int height = Data.size();
+        int width = Data[0].size();
 
+        vector<vector<int>> translatedImage(height, vector<int>(width, 0));
 
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                int new_i = i + dy;
+                int new_j = j + dx;
 
-    
+                // Check if the new position is within the image bounds
+                if (new_i >= 0 && new_i < height && new_j >= 0 && new_j < width) {
+                    translatedImage[new_i][new_j] = Data[i][j];
+                }
+            }
+        }
+
+        Data = translatedImage; // Update the original image with the translated image
+    }
+    void translateImage(int dx, int dy) {
+        TI(Data, dx, dy);
+    }
+    void crop(vector<vector<int>>& image, int x, int y, int cropWidth, int cropHeight) {
+        int height = image.size();
+        int width = image[0].size();
+
+        // Check if the crop region is within the image bounds
+        if (x < 0 || y < 0 || x + cropWidth > width || y + cropHeight > height) {
+            cout << "Crop region is out of bounds." << endl;
+            return;
+        }
+
+        vector<vector<int>> croppedImage(cropHeight, vector<int>(cropWidth, 0));
+
+        for (int i = y; i < y + cropHeight; ++i) {
+            for (int j = x; j < x + cropWidth; ++j) {
+                croppedImage[i - y][j - x] = image[i][j];
+            }
+        }
+
+        image = croppedImage; // Update the original image with the cropped image
+    }
+    void CropImage(int x, int y, int cw, int ch)
+    {
+        crop(Data, x, y, cw, ch);
+    }
 
 
 };
@@ -440,7 +672,7 @@ int Menu(char menuFile[]) {
 
 int main()
 {
-    Image Images;
+    Image Images[2];
     int ActiveImage = 0;
     int ErrorCode = 0;
     int choice;
@@ -457,7 +689,7 @@ int main()
             cout << "Specify File Name (format: D:/folder/file)";
             cin >> ImageFileName1;
 
-            ErrorCode = Images.Load(ImageFileName1);
+            ErrorCode = Images[ActiveImage].Load(ImageFileName1);
             if (ErrorCode == 0) {
                 cout << "File Loaded Successfully  " << endl;
             }
@@ -469,7 +701,7 @@ int main()
 
             cout << "Specify File Name (format: D:/folder/file) ";
             cin >> ImageFileName;
-            ErrorCode = Images.Save(ImageFileName);
+            ErrorCode = Images[ActiveImage].Save(ImageFileName);
             if (ErrorCode == 0) {
                 saveCheck++;
                 cout << "File Saved as " << ImageFileName << endl;
@@ -479,55 +711,168 @@ int main()
             }
         }
         else if (3 == choice) {
-            Images.RHorizontalFlip();
+            cout << endl << "Enter to which factor you want to increase Brightness(1 - 5) ";
+            int factor;
+            cin >> factor;
+            if (factor > 5) {
+                cout << "Please Enter within or 5" << endl;
+                cin >> factor;
+            }
+
+            Images[ActiveImage].IncreaseBrightness(factor);
             cout << "You need to save the changes " << endl;
         }else if (4 == choice) {
-            Images.VerticalFlip();
+            Images[ActiveImage].LinearCont();
             cout << "You need to save the changes " << endl;
         }
         else if (5 == choice) {
-            Images.Derivative();
+
+            Images[ActiveImage].LinearFilter(1);
             cout << "You need to save the changes " << endl;
         }else if (6 == choice) {
-            Images.Blackpoint();
+            Images[ActiveImage].Tobinary();
             cout << "You need to save the changes " << endl;
         }
         else if (7 == choice) {
-            int ratio;
+            /*int ratio;
             cout << "Enter Ratio for blur e.g 1X =3 , 2X = 4" << endl;
             cin >> ratio;
-            Images.Mean(ratio);
+            Images[ActiveImage].Mean(ratio);*/
+            cout << endl<<"Enter the size how many time you want to increase: ";
+            int multi;
+            cin >> multi;
+            Images[ActiveImage].SU(multi);
             cout << "You need to save the changes " << endl;
         }else if (8 == choice) {
+            cout << endl << "Enter the size how many time you want to increase: ";
+            int Reducer;
+            cin >> Reducer;
+            Images[ActiveImage].SD(Reducer);
             
-            Images.Median();
             cout << "You need to save the changes " << endl;
         }else if (9== choice) {
             
-            Images.IncreaseBrightness();
+            Images[ActiveImage].RotateImageClockwise();
             cout << "You need to save the changes " << endl;
         } else if (10 == choice) {
-                Images.LinearCont();
+            Images[ActiveImage].RotateImageAntiClockwise();
             
             cout << "You need to save the changes " << endl;
         }else if (11 == choice) {
             double angle;
             cout << "enter an angle : ";
             cin >> angle;
-            Images.RotateImageByAngle(angle);
+            Images[ActiveImage].RotateImageByAngle(angle);
             
             cout << "You need to save the changes " << endl;
         }else if (12 == choice) {
            
-            Images.RotateImageClockwise();
+            Images[ActiveImage].RHorizontalFlip();
             cout << "You need to save the changes " << endl;
         }else if (13 == choice) {
-           
-            Images.Copy(ImageFileName1);
+            int opt = 1;
+            Images[ActiveImage].VerticalFlip();
             cout << "You need to save the changes " << endl;
-        } else if (14 == choice) {
-            if(saveCheck>0)
-                 system(ImageFileName);
+        }else if (14 == choice) {
+            cout << "Enter the x-axis start of crop ";
+            int x;
+            cin >> x;
+            cout << endl;
+            cout << "Enter the y-axis start of crop ";
+            int y;
+            cin >> y;
+            cout << endl;
+
+            cout << "Enter the crop width  ";
+            int cw;
+            cin >> cw;
+            cout << endl;
+
+            cout << "Enter the crop height ";
+            int ch;
+            cin >> ch;
+            cout << endl;
+
+
+            Images[ActiveImage].Row = cw;
+            Images[ActiveImage].Col = ch;
+            Images[ActiveImage].CropImage(x,y,cw,ch);
+            
+            cout << "You need to save the changes " << endl;
+        } else if (15 == choice) {
+            if (saveCheck > 0) {
+                cout << Images[ActiveImage].Col << endl;
+                cout << Images[ActiveImage].Row;
+                system(ImageFileName);
+            }
+            else
+            {
+                cout << "You have not saved File yet .";
+            }
+           
+        } else if (16 == choice) {
+            if (saveCheck > 0) {
+                cout << Images[ActiveImage].Col << endl;
+                cout << Images[ActiveImage].Row;
+                system(ImageFileName);
+            }
+            else
+            {
+                cout << "You have not saved File yet .";
+            }
+           
+        } 
+        else if (17 == choice) {
+            cout << "Enter Blur factor (1X = 3, 2X = 6 ... 10X = 30) ";
+            int fct;
+            cin >> fct;
+            Images[ActiveImage].Mean(fct);
+           
+        } 
+        else if (18 == choice) {
+            
+            Images[ActiveImage].Median();
+           
+        }
+        else if (19 == choice) {
+            
+            Images[ActiveImage].LinearFilter(1);
+           
+        }else if (20 == choice) {
+            
+            Images[ActiveImage].LinearFilter(2);
+           
+        }else if (21 == choice) {
+            
+            Images[ActiveImage].LinearFilter(3);
+           
+        }else if (22 == choice) {
+            
+            Images[ActiveImage].Derivative();
+           
+        }else if (23 == choice) {
+            
+            Images[ActiveImage].LinearFilter(4);
+           
+        }else if (24 == choice) {
+            cout << "Enter Translation X-axis : ";
+            int tx;
+            cin >> tx;
+            cout << endl;
+            cout << "Enter Y-axis : ";
+            int ty;
+            cin >> ty;
+
+            Images[ActiveImage].translateImage(tx,ty);
+           
+        }
+        
+        else if (25 == choice) {
+            if (saveCheck > 0) {
+                cout << Images[ActiveImage].Col << endl;
+                cout << Images[ActiveImage].Row;
+                system(ImageFileName);
+            }
             else
             {
                 cout << "You have not saved File yet .";
@@ -535,7 +880,7 @@ int main()
            
         }
 
-    } while (choice != 15);
+    } while (choice != 26);
 
     return 0;
 }
