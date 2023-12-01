@@ -55,6 +55,7 @@ struct Image
 {
     char ImageFileName[100];
     vector<vector<int>> Data;
+    
     int Col, Row, Depth;
     vector<char> comment;
 
@@ -336,48 +337,33 @@ struct Image
             }
         }
     }
-    void RotateImageClockwise()
-    {
-        int temp;
-        for (int layer = 0; layer < Row / 2; layer++) {
-            int first = layer;
-            int last = Row - 1 - layer;
-            for (int i = first; i < last; i++) {
-                int offset = i - first;
-                // Save top
-                temp = Data[first][i];
-                // Left -> Top
-                Data[first][i] = Data[last - offset][first];
-                // Bottom -> Left
-                Data[last - offset][first] = Data[last][last - offset];
-                // Right -> Bottom
-                Data[last][last - offset] = Data[i][last];
-                // Top -> Right
-                Data[i][last] = temp;
+    void RotateImageClockwise() {
+        vector<vector<int>> temp(Col, vector<int>(Row, 0)); // Create a temporary vector with swapped dimensions
+
+        for (int i = 0; i < Row; ++i) {
+            for (int j = 0; j < Col; ++j) {
+                temp[j][Row - i - 1] = Data[i][j]; // Rotate clockwise
             }
         }
+
+        // Update Data with the rotated image
+        Data = temp;
     }
+
     void RotateImageAntiClockwise()
     {
-        int temp;
-        for (int layer = 0; layer < Row / 2; layer++) {
-            int first = layer;
-            int last = Row - 1 - layer;
-            for (int i = first; i < last; i++) {
-                int offset = i - first;
-                // Save top
-                temp = Data[i][first];
-                // Left -> Top
-                Data[i][first] = Data[first][last - offset];
-                // Bottom -> Left
-                Data[first][last - offset] = Data[last-offset][last];
-                // Right -> Bottom
-                Data[last - offset][last] = Data[last][i];
-                // Top -> Right
-                Data[last][i] = temp;
+        vector<vector<int>> temp(Col, vector<int>(Row, 0)); // Create a temporary vector with swapped dimensions
+
+        for (int i = 0; i < Row; ++i) {
+            for (int j = 0; j < Col; ++j) {
+                temp[Col-j-1][i] = Data[i][j]; // Rotate clockwise
             }
         }
+
+        // Update Data with the rotated image
+        Data = temp;
     }
+   
     
     void RotateImageByAngle(double angle) {
         const double PI = 3.141519;
@@ -440,9 +426,7 @@ struct Image
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
                         if (!(Sharpen >> kernel[i][j])) {
-                            // Handle the case where there are not enough values in the file
-                            // Or an error occurs while reading from the file
-                            // This might involve breaking out of the loop or handling the error accordingly
+                            // error accordingly
                         }
                     }
                 }
@@ -456,9 +440,7 @@ struct Image
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
                         if (!(Blur >> kernel[i][j])) {
-                            // Handle the case where there are not enough values in the file
-                            // Or an error occurs while reading from the file
-                            // This might involve breaking out of the loop or handling the error accordingly
+                            //ngl
                         }
                     }
                 }
@@ -471,9 +453,7 @@ struct Image
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
                         if (!(Edge >> kernel[i][j])) {
-                            // Handle the case where there are not enough values in the file
-                            // Or an error occurs while reading from the file
-                            // This might involve breaking out of the loop or handling the error accordingly
+                            // brb
                         }
                     }
                 }
@@ -486,9 +466,7 @@ struct Image
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
                         if (!(Neg >> kernel[i][j])) {
-                            // Handle the case where there are not enough values in the file
-                            // Or an error occurs while reading from the file
-                            // This might involve breaking out of the loop or handling the error accordingly
+                           //
                         }
                     }
                 }
@@ -550,7 +528,6 @@ struct Image
 
         Data = scaledData; // Update the original Data with the scaled-up data
     }
-
     void ScaleDown(vector<vector<int>>& Data, int factor) {
         int height = Data.size();
         int width = Data[0].size();
@@ -574,7 +551,6 @@ struct Image
 
         Data = scaledData; // Update the original Data with the scaled data
     }
-   
     void SD(int factor) {
         ScaleDown(Data, factor);
     }
@@ -638,6 +614,62 @@ struct Image
     {
         crop(Data, x, y, cw, ch);
     }
+    void CombineTop(vector<vector<int>>& Data1, vector<vector<int>>& Data2) {
+        int h_1 = Data1.size();
+        int h_2 = Data2.size();
+        int w_1 = Data1[0].size();
+        int w_2 = Data2[0].size();
+
+        int summationH = h_1 + h_2;
+        int summationW = max(w_1, w_2); // Use the maximum width of both images
+
+        vector<vector<int>> Combination(summationH, vector<int>(summationW, 0));
+
+        // Copy Data1 to the top section of Combination
+        for (int i = 0; i < h_1; ++i) {
+            for (int j = 0; j < w_1; ++j) {
+                Combination[i][j] = Data1[i][j];
+            }
+        }
+
+        // Copy Data2 to the bottom section of Combination
+        for (int i = 0; i < h_2; ++i) {
+            for (int j = 0; j < w_2; ++j) {
+                Combination[i + h_1][j] = Data2[i][j]; // Adjust the row index to start after Data1's height
+            }
+        }
+
+        Data = Combination; // Assign the combined image to Data
+    } 
+    void CombineSide(vector<vector<int>>& Data1, vector<vector<int>>& Data2) {
+        int h_1 = Data1.size();
+        int h_2 = Data2.size();
+        int w_1 = Data1[0].size();
+        int w_2 = Data2[0].size();
+
+        int summationW= w_1 + w_2;
+        int summationH = max(h_1, h_2); // Use the maximum width of both images
+
+        vector<vector<int>> Combination(summationH, vector<int>(summationW, 0));
+
+        // Copy Data1 to the top section of Combination
+        for (int i = 0; i < h_1; ++i) {
+            for (int j = 0; j < w_1; ++j) {
+                Combination[i][j] = Data1[i][j];
+            }
+        }
+
+        // Copy Data2 to the bottom section of Combination
+        for (int i = 0; i < h_2; ++i) {
+            for (int j = 0; j < w_2; ++j) {
+                Combination[i][j+w_1] = Data2[i][j]; // Adjust the row index to start after Data1's height
+            }
+        }
+
+        Data = Combination; // Assign the combined image to Data
+    }
+
+   
 
 
 };
@@ -674,6 +706,7 @@ int main()
 {
     Image Images[2];
     int ActiveImage = 0;
+    int tocombine = 1;
     int ErrorCode = 0;
     int choice;
     char menufile[] = "D:/designs/Main.txt";
@@ -753,9 +786,15 @@ int main()
         }else if (9== choice) {
             
             Images[ActiveImage].RotateImageClockwise();
+            int temp = Images[ActiveImage].Row;
+            Images[ActiveImage].Row = Images[ActiveImage].Col;
+            Images[ActiveImage].Col = temp;
             cout << "You need to save the changes " << endl;
         } else if (10 == choice) {
             Images[ActiveImage].RotateImageAntiClockwise();
+            int temp = Images[ActiveImage].Row;
+            Images[ActiveImage].Row = Images[ActiveImage].Col;
+            Images[ActiveImage].Col = temp;
             
             cout << "You need to save the changes " << endl;
         }else if (11 == choice) {
@@ -800,15 +839,30 @@ int main()
             
             cout << "You need to save the changes " << endl;
         } else if (15 == choice) {
-            if (saveCheck > 0) {
-                cout << Images[ActiveImage].Col << endl;
-                cout << Images[ActiveImage].Row;
-                system(ImageFileName);
-            }
-            else
-            {
-                cout << "You have not saved File yet .";
-            }
+            
+                cout << "Add path of image to add ";
+                char combineloc[200];
+                cin >> combineloc;
+                Images[tocombine].Load(combineloc);
+                Images[ActiveImage].CombineSide(Images[ActiveImage].Data, Images[tocombine].Data);
+                
+                int x1 = Images[ActiveImage].Data[0].size();
+                int x2 = Images[tocombine].Data[0].size();
+                
+                int x = max(x1, x2);
+                
+                
+                Images[ActiveImage].Row = Images[ActiveImage].Data.size();
+                Images[ActiveImage].Col = x;
+                cout << Images[ActiveImage].Row << "" << Images[ActiveImage].Col << endl;
+
+
+
+
+                cout << "You have to save file " << endl;
+
+               
+            
            
         } else if (16 == choice) {
             if (saveCheck > 0) {
@@ -869,8 +923,7 @@ int main()
         
         else if (25 == choice) {
             if (saveCheck > 0) {
-                cout << Images[ActiveImage].Col << endl;
-                cout << Images[ActiveImage].Row;
+               
                 system(ImageFileName);
             }
             else

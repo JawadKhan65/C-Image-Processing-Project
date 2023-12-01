@@ -1,17 +1,28 @@
 ﻿  flePractice.cpp
 D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(38,16): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(518,51): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(521,35): warning C4244: '=': conversion from 'float' to '_Ty', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(496,51): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(499,35): warning C4244: '=': conversion from 'float' to '_Ty', possible loss of data
           with
           [
               _Ty=int
           ]
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(533,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(534,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(555,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(556,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(595,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(596,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(618,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(619,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(511,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(512,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(532,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(533,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(571,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(572,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(594,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(595,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(618,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(619,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(620,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(621,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(645,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(646,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(647,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(648,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(849,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(850,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(855,72): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
   filePractice.vcxproj -> D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\x64\Debug\filePractice.exe
