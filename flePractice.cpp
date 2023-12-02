@@ -503,13 +503,7 @@ struct Image
         }
         
         
-        // Printing the contents of the Filter_Kernel array
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                cout << Filter_Kernel[i][j] << " ";
-            }
-            cout << endl;
-        }
+       
         vector<vector<int>> temporary;
         temporary.clear();
         temporary.resize(Row, vector<int>(Col, 0));// outline assigning of size
@@ -518,7 +512,7 @@ struct Image
             for (int x = 1; x < Col - 1; x++) {
                 float sum = 0.0;
 
-                // Convolution: Multiply and accumulate pixel values based on the filter Filter_Kernel
+                // Convolution: Multiply and accumulate pixel values based on the filter Filter_Kernel ----- for hashir
                 for (int i = -1; i <= 1; i++) {
                     for (int j = -1; j <= 1; j++) {
                         sum += Data[y + i][x + j] * Filter_Kernel[i + 1][j + 1];// getting kernel fitted into image
@@ -617,29 +611,31 @@ struct Image
             }
         }
     }
-    void TI(vector<vector<int>>& Data, int dx, int dy) {
-        int height = Data.size();//row
-        int width = Data[0].size();//col
+    void translateImage( int dx, int dy) {
+       int height = Data.size(); // row
+        int width = Data[0].size(); // col
 
-        vector<vector<int>> translatedImage(height, vector<int>(width, 0));
+        // Create a translated image with extended dimensions
+        vector<vector<int>> translatedImage(height + 2 * dy, vector<int>(width + 2 * dx, 185)); // Fill extended area with white (assuming 255 represents white)
 
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
-                int new_i = i + dy;// changed value of x 
-                int new_j = j + dx;// and y
+                int new_i = i + dy; // Calculate new index for rows
+                int new_j = j + dx; // Calculate new index for columns
 
-                // Check if the new position is within the image bounds
-                if (new_i >= 0 && new_i < height && new_j >= 0 && new_j < width) {
-                    translatedImage[new_i][new_j] = Data[i][j];
+                // Check if the new position is within the translated image bounds
+                if (new_i >= 0 && new_i < height + 2 * dy && new_j >= 0 && new_j < width + 2 * dx) {
+                    translatedImage[new_i][new_j] = Data[i][j]; // Fill actual image pixels
                 }
             }
         }
 
-        Data = translatedImage; // Update the original image with the translated image
+        Data = translatedImage; // Update the image data with the translated image
     }
-    void translateImage(int dx, int dy) {
-        TI(Data, dx, dy);
-    }
+    
+
+
+    
     void crop(vector<vector<int>>& image, int x, int y, int cropWidth, int cropHeight) {
         int height = image.size();
         int width = image[0].size();
@@ -670,10 +666,10 @@ struct Image
         int w_1 = Data1[0].size();
         int w_2 = Data2[0].size();
 
-        int summationH = h_1 + h_2;
-        int summationW = max(w_1, w_2); // Use the maximum width of both images
+        int sumOFCOls = h_1 + h_2;
+        int sumOFROWS = max(w_1, w_2); // Use the maximum width of both images
 
-        vector<vector<int>> Combination(summationH, vector<int>(summationW, 0));
+        vector<vector<int>> Combination(sumOFCOls, vector<int>(sumOFROWS, 0));
 
         // Copy Data1 to the top section of Combination
         for (int i = 0; i < h_1; ++i) {
@@ -761,6 +757,7 @@ int main()
     int choice;
     char menufile[] = "D:/designs/Main.txt";
     char ImageFileName[100];
+    bool FileModified = false;
     int saveCheck = 0;
 
     do {
@@ -803,24 +800,21 @@ int main()
             }
 
             Images[ActiveImage].IncreaseBrightness(factor);
-            cout << "You need to save the changes " << endl;
+            cout << "------------------------You need to save your file--------------------------- " << endl;
         }else if (4 == choice) {
             Images[ActiveImage].LinearCont();
-            cout << "You need to save the changes " << endl;
+            cout << "------------------------You need to save your file--------------------------- " << endl;
         }
         else if (5 == choice) {
 
             Images[ActiveImage].LinearFilter(1);
-            cout << "You need to save the changes " << endl;
+            cout << "------------------------You need to save your file--------------------------- " << endl;
         }else if (6 == choice) {
             Images[ActiveImage].Tobinary();
-            cout << "You need to save the changes " << endl;
+            cout << "------------------------You need to save your file--------------------------- " << endl;
         }
         else if (7 == choice) {
-            /*int ratio;
-            cout << "Enter Ratio for blur e.g 1X =3 , 2X = 4" << endl;
-            cin >> ratio;
-            Images[ActiveImage].Mean(ratio);*/
+            
             cout << endl<<"Enter the size how many time you want to increase: ";
             int multi;
             cin >> multi;
@@ -829,9 +823,9 @@ int main()
             Images[ActiveImage].Col *= multi;
 
             
-            cout << "You need to save the changes " << endl;
+            cout << "------------------------You need to save your file--------------------------- " << endl;
         }else if (8 == choice) {
-            cout << endl << "Enter the size how many time you want to increase: ";
+            cout << endl << "Enter the size how many time you want to reduce : ";
             int Reducer;
             cin >> Reducer;
             Images[ActiveImage].ScaleDown(Images[ActiveImage].Data,Reducer);
@@ -840,36 +834,36 @@ int main()
           
             
             
-            cout << "You need to save the changes " << endl;
+            cout << "------------------------You need to save your file--------------------------- " << endl;
         }else if (9== choice) {
             
             Images[ActiveImage].RotateImageClockwise();
             int temp = Images[ActiveImage].Row;
             Images[ActiveImage].Row = Images[ActiveImage].Col;
             Images[ActiveImage].Col = temp;
-            cout << "You need to save the changes " << endl;
+            cout << "------------------------You need to save your file--------------------------- " << endl;
         } else if (10 == choice) {
             Images[ActiveImage].RotateImageAntiClockwise();
             int temp = Images[ActiveImage].Row;
             Images[ActiveImage].Row = Images[ActiveImage].Col;
             Images[ActiveImage].Col = temp;
             
-            cout << "You need to save the changes " << endl;
+            cout << "------------------------You need to save your file--------------------------- " << endl;
         }else if (11 == choice) {
             double angle;
             cout << "enter an angle : ";
             cin >> angle;
             Images[ActiveImage].RotateImageByAngle(angle);
             
-            cout << "You need to save the changes " << endl;
+            cout << "------------------------You need to save your file--------------------------- " << endl;
         }else if (12 == choice) {
            
             Images[ActiveImage].RHorizontalFlip();
-            cout << "You need to save the changes " << endl;
+            cout << "------------------------You need to save your file--------------------------- " << endl;
         }else if (13 == choice) {
             int opt = 1;
             Images[ActiveImage].VerticalFlip();
-            cout << "You need to save the changes " << endl;
+            cout << "------------------------You need to save your file--------------------------- " << endl;
         }else if (14 == choice) {
             cout << "Enter the x-axis start of crop ";
             int x;
@@ -889,13 +883,21 @@ int main()
             int ch;
             cin >> ch;
             cout << endl;
+            int checkX = Images[ActiveImage].Row - x;
+            int checkY = Images[ActiveImage].Col - y;
+            if (cw > checkX || ch > checkY) {
+                cout << "-------------- Value Error : Please Enter Values Carefully -------------------" << endl;
+            }
+            else {
 
+                Images[ActiveImage].Row = cw;
+                Images[ActiveImage].Col = ch;
+                Images[ActiveImage].CropImage(x, y, cw, ch);
 
-            Images[ActiveImage].Row = cw;
-            Images[ActiveImage].Col = ch;
-            Images[ActiveImage].CropImage(x,y,cw,ch);
+                cout << "------------------------You need to save your file--------------------------- " << endl;
+            }
             
-            cout << "You need to save the changes " << endl;
+            
         } else if (15 == choice) {
             
                 cout << "Add path of image to add ";
@@ -912,61 +914,81 @@ int main()
                 
                 Images[ActiveImage].Row = Images[ActiveImage].Data.size();
                 Images[ActiveImage].Col = x;
-                cout << Images[ActiveImage].Row << "" << Images[ActiveImage].Col << endl;
+                
+                    cout << "------------------------You need to save your file--------------------------- " << endl;
+                
 
-
-
-
-                cout << "You have to save file " << endl;
-
-               
-            
            
         } else if (16 == choice) {
-            if (saveCheck > 0) {
-                cout << Images[ActiveImage].Col << endl;
-                cout << Images[ActiveImage].Row;
-                system(ImageFileName);
-            }
-            else
-            {
-                cout << "You have not saved File yet .";
-            }
+            cout << "Add path of image to add ";
+            char combinelocS[200];
+            cin >> combinelocS;
+            Images[tocombine].Load(combinelocS);
+            Images[ActiveImage].CombineTop(Images[ActiveImage].Data, Images[tocombine].Data);
+
+            int x1 = Images[ActiveImage].Data[0].size();
+            int x2 = Images[tocombine].Data[0].size();
+
+            int x = max(x1, x2);
+
+
+            Images[ActiveImage].Row = Images[ActiveImage].Data.size();
+            Images[ActiveImage].Col = x;
+            
+                cout << "------------------------You need to save your file--------------------------- " << endl;
            
         } 
         else if (17 == choice) {
-            cout << "Enter Blur factor (1X = 3, 2X = 6 ... 10X = 30) ";
+            cout << "Enter Blur factor (1-10) ";
             int fct;
             cin >> fct;
-            Images[ActiveImage].Mean(fct);
+            if (fct > 10) {
+                cout << "Please Enter within or 10" << endl;
+                cin >> fct;
+            }
+            Images[ActiveImage].Mean((fct*3));
+            
+                cout << "------------------------You need to save your file--------------------------- " << endl;
            
         } 
         else if (18 == choice) {
             
             Images[ActiveImage].Median();
            
+                cout << "------------------------You need to save your file--------------------------- " << endl;
+           
         }
         else if (19 == choice) {
             
             Images[ActiveImage].LinearFilter(1);
+            
+                cout << "------------------------You need to save your file--------------------------- " << endl;
            
         }else if (20 == choice) {
             
             Images[ActiveImage].LinearFilter(2);
-           
+            
+                cout << "------------------------You need to save your file--------------------------- " << endl;
         }else if (21 == choice) {
             
             Images[ActiveImage].LinearFilter(3);
            
+                cout << "------------------------You need to save your file--------------------------- " << endl;
+           
         }else if (22 == choice) {
             
             Images[ActiveImage].Derivative();
+            
+                cout << "------------------------You need to save your file--------------------------- " << endl;
            
         }else if (23 == choice) {
             
             Images[ActiveImage].LinearFilter(4);
            
+                cout << "------------------------You need to save your file--------------------------- " << endl;
+           
         }else if (24 == choice) {
+            cout << "Your image Rows : " << Images[ActiveImage].Row << " " << "Yor Image Columns : " << Images[ActiveImage].Col << endl;
             cout << "Enter Translation X-axis : ";
             int tx;
             cin >> tx;
@@ -977,10 +999,12 @@ int main()
 
             Images[ActiveImage].translateImage(tx,ty);
            
+                cout << "------------------------You need to save your file--------------------------- " << endl;
+           
         }
         
         else if (25 == choice) {
-            if (saveCheck > 0) {
+            if (saveCheck>0) {
                
                 system(ImageFileName);
             }

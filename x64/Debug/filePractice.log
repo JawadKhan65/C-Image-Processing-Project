@@ -9,29 +9,32 @@ D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePrac
           [
               _Ty=int
           ]
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(524,51): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(527,35): warning C4244: '=': conversion from 'float' to '_Ty', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(518,51): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(521,35): warning C4244: '=': conversion from 'float' to '_Ty', possible loss of data
           with
           [
               _Ty=int
           ]
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(539,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(540,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(565,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(566,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(621,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(622,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(644,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(645,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(668,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(669,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(670,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(671,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(695,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(696,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(697,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(698,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(907,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(908,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(913,72): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(533,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(534,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(559,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(560,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(615,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(616,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(640,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(641,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(664,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(665,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(666,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(667,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(691,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(692,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(693,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(694,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(909,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(910,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(915,72): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(929,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(930,20): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\filePractice\flePractice.cpp(935,68): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
   filePractice.vcxproj -> D:\NUCES\Semester 1\PF and PF lab\C++ practice\filePractice\x64\Debug\filePractice.exe
