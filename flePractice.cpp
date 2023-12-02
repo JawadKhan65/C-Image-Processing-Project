@@ -366,51 +366,55 @@ struct Image
    
     
     void RotateImageByAngle(double angle) {
-        const double PI = 3.141519;
-        double radians = angle * PI / 180.0; // Convert angle to radians
-        double cosine = cos(radians);
-        double sine = sin(radians);
+        
+       
+            const double PI = 3.141592;
+            double Radians = angle * PI / 180.0;// changing angle into radians for cmath
 
-        // Create a temporary matrix to store rotated values
-        int** rotatedData = new int* [Row];
-        for (int i = 0; i < Row; i++) {
-            rotatedData[i] = new int[Col];
-        }
+            double cosTheta = cos(Radians);// horizontal angle
+            double sinTheta = sin(Radians);//vertical angle
 
-        // Find the center of the image
-        double cx = static_cast<double>(Col - 1) / 2.0;
-        double cy = static_cast<double>(Row - 1) / 2.0;
+            double centerX = static_cast<double>(Col) / 2.0; // finding center along X
+            double center_alongY = static_cast<double>(Row) / 2.0;// finding center along Y
 
-        // Traverse the original matrix and apply rotation
-        for (int y = 0; y < Row; y++) {
-            for (int x = 0; x < Col; x++) {
-                // Translate coordinates to the center
-                double xFromCenter = x - cx;
-                double yFromCenter = y - cy;
+            // Calculating the dimensions of the rotated image 
+            int rotatedCols = abs(cosTheta) * Col + abs(sinTheta) * Row;
+            int rotatedRows = abs(sinTheta) * Col + abs(cosTheta) * Row;
+            // new vector to get rotated image
+            vector<vector<int>> rotatedData(rotatedRows, vector<int>(rotatedCols, 0));
 
-                // Apply rotation formula
-                double newX = xFromCenter * cosine - yFromCenter * sine + cx;
-                double newY = xFromCenter * sine + yFromCenter * cosine + cy;
+            //loop to rotate
+            for (int r = 0; r < rotatedRows; ++r) {
+                for (int c = 0; c < rotatedCols; ++c) {
+                    double rotx = c - centerX - (rotatedCols - Col) / 2.0; // difference from center of onPoint index along x
+                    double roty = r - center_alongY - (rotatedRows - Row) / 2.0;// difference from center of onPoint index along Y
 
-                // Check bounds and assign values to the temporary matrix
-                if (newX >= 0 && newX < Col && newY >= 0 && newY < Row) {
-                    rotatedData[static_cast<int>(newY)][static_cast<int>(newX)] = Data[y][x];
+                    double changedX = rotx * cosTheta + roty * sinTheta + centerX;
+                    double changedY = -rotx * sinTheta + roty * cosTheta + center_alongY;
+
+                    int x = changedX;
+                    int y = changedY;
+                    int x1 = x + 1;
+                    int y1 = y + 1;
+
+                    if (x >= 0 && x1 < Col && y >= 0 && y1 < Row) {
+                        double locX1 = changedX - x;
+                        double locX0 = 1.0 - locX1;
+                        double locY1 = changedY - y;
+                        double locY0 = 1.0 - locY1;
+
+                        rotatedData[r][c] = locY0 * (locX0 * Data[y][x] + locX1 * Data[y][x1])
+                            + locY1 * (locX0 * Data[y1][x] + locX1 * Data[y1][x1]);
+                    }
                 }
             }
-        }
 
-        // Copy rotated data back to the original matrix
-        for (int y = 0; y < Row; ++y) {
-            for (int x = 0; x < Col; ++x) {
-                Data[y][x] = rotatedData[y][x];
-            }
-        }
-
-        // Deallocate temporary matrix
-        for (int i = 0; i < Row; ++i) {
-            delete[] rotatedData[i];
-        }
-        delete[] rotatedData;
+            
+            Col = rotatedCols;// changing orignal Cols
+            Row = rotatedRows;// changing orignal Rows
+            Data = rotatedData;
+            
+        
     }
     // Assuming ImageData represents the image as a 2D array
 
@@ -528,6 +532,10 @@ struct Image
 
         Data = scaledData; // Update the original Data with the scaled-up data
     }
+
+
+    
+
     void ScaleDown(vector<vector<int>>& Data, int factor) {
         int height = Data.size();
         int width = Data[0].size();
@@ -540,22 +548,36 @@ struct Image
         for (int i = 0; i < scaledH; i++) {
             for (int j = 0; j < scaledW; j++) {
                 int sum = 0;
-                for (int k = 0; k < factor; k++) {
-                    for (int l = 0; l < factor; l++) {
-                        sum += Data[i * factor + k][j * factor + l];
+                int count = 0;
+
+                // Calculate the boundaries for the current group
+                int rowStart = i * factor;
+                int rowEnd = min(rowStart + factor, height);
+                int colStart = j * factor;
+                int colEnd = min(colStart + factor, width);
+
+                // Calculate sum within the current group
+                for (int row = rowStart; row < rowEnd; row++) {
+                    for (int col = colStart; col < colEnd; col++) {
+                        sum += Data[row][col];
+                        count++;
                     }
                 }
-                scaledData[i][j] = sum / (factor * factor);
+
+                // Average the sum for the scaled data
+                scaledData[i][j] = (count > 0) ? sum / count : 0; // Avoid division by zero
             }
         }
 
         Data = scaledData; // Update the original Data with the scaled data
     }
+    
+
+
+
+
     void SD(int factor) {
         ScaleDown(Data, factor);
-    }
-    void SU(int factor) {
-        ScaleUp(Data, factor);
     }
     void Tobinary() {
         // thresholding technique
@@ -774,13 +796,16 @@ int main()
             cout << endl<<"Enter the size how many time you want to increase: ";
             int multi;
             cin >> multi;
-            Images[ActiveImage].SU(multi);
+            Images[ActiveImage].ScaleUp(Images[ActiveImage].Data,multi);
+            
             cout << "You need to save the changes " << endl;
         }else if (8 == choice) {
             cout << endl << "Enter the size how many time you want to increase: ";
             int Reducer;
             cin >> Reducer;
-            Images[ActiveImage].SD(Reducer);
+            Images[ActiveImage].ScaleDown(Images[ActiveImage].Data,Reducer);
+          
+            
             
             cout << "You need to save the changes " << endl;
         }else if (9== choice) {
