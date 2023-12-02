@@ -613,7 +613,7 @@ struct Image
         for (int i = 0; i < Row; i++)
         {
             for (int j = 0; j < Col; j++) {
-                Data[i][j] = (Data[i][j] > threshold) ? 1 : 0;
+                Data[i][j] = (Data[i][j] >= threshold) ? Depth : 0;
             }
         }
     }
