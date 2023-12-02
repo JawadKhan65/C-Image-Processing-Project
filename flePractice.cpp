@@ -198,15 +198,17 @@ struct Image
         
     }
     void LinearCont() {
-        int min = 255;
-        int max = 0;
+        int min = 255; // white
+        int max = 0;// black
         for (int i = 0; i < Row; i++)
         {
             for (int j = 0; j < Col; j++) {
                 if (Data[i][j] < min) {
-                    min = Data[i][j];
+                    min = Data[i][j];//simple if anything more brighter
+                        // checking if any thing less than assigned min
                 }
                 if (Data[i][j] > max) {
+                    // same as above anything more darker than dark 0
                     max = Data[i][j];
                 }
 
@@ -217,6 +219,9 @@ struct Image
             for (int j = 0; j < Col; j++)
             {
                 Data[i][j] = (Data[i][j] - min) * 255;
+                //replaced the new values by subtracting white color any
+                // multiplying max depth
+
             }
 
         }
@@ -284,14 +289,14 @@ struct Image
 
                         // find width and height
                         int height = i + row;
-                        int width = j + col;
+                        int width = j + col;//height check and width check
                         if ((height >= 0 && width >= 0) && (height < Row && width < Col)) {
-                            mean += Data[height][width];
+                            mean += Data[height][width];//replacing sum at every index
                         }
 
                     }
                 }
-                Data[i][j] = mean / square;
+                Data[i][j] = mean / square;// mean filtering sum to mean by dividing
             }
         }
     }
@@ -300,16 +305,16 @@ struct Image
 
         for (int i = 0; i < Row; i++) {
             for (int j = 0; j < Col; j++) {
-                int value[9];
-                int index = 0;
+                int value[9];//array for later sorting
+                int index = 0;//index for incrementation
 
                 for (int row = -matrix_size / 2; row <= matrix_size / 2; row++) {
                     for (int col = -matrix_size / 2; col <= matrix_size / 2; col++) {
-                        int height = i + row;
+                        int height = i + row;// same boundary check not excede the matrix
                         int width = j + col;
-
+                        // width height check here
                         if ((height >= 0 && width >= 0) && (height < Row && width < Col)) {
-                            value[index++] = Data[height][width];
+                            value[index++] = Data[height][width];//placement
                         }
                     }
                 }
@@ -318,7 +323,7 @@ struct Image
                 for (int k = 0; k < index - 1; k++) {
                     for (int l = 0; l < index - k - 1; l++) {
                         if (value[l] > value[l + 1]) {
-                            int temp = value[l];
+                            int temp = value[l];//bubble sort
                             value[l] = value[l + 1];
                             value[l + 1] = temp;
                         }
@@ -327,9 +332,11 @@ struct Image
 
                 int median;
                 if (index % 2 == 0) {
+                    //for evens
                     median = (value[index / 2] + value[index / 2 - 1]) / 2; // If even number of elements
                 }
                 else {
+                    //for odds
                     median = value[index / 2]; // If odd number of elements
                 }
 
@@ -343,6 +350,7 @@ struct Image
         for (int i = 0; i < Row; ++i) {
             for (int j = 0; j < Col; ++j) {
                 temp[j][Row - i - 1] = Data[i][j]; // Rotate clockwise
+                //transpose
             }
         }
 
@@ -356,7 +364,8 @@ struct Image
 
         for (int i = 0; i < Row; ++i) {
             for (int j = 0; j < Col; ++j) {
-                temp[Col-j-1][i] = Data[i][j]; // Rotate clockwise
+                temp[Col-j-1][i] = Data[i][j]; // Rotate anticlockwise
+                //transpose along cols
             }
         }
 
@@ -389,16 +398,16 @@ struct Image
                     double rotx = c - centerX - (rotatedCols - Col) / 2.0; // difference from center of onPoint index along x
                     double roty = r - center_alongY - (rotatedRows - Row) / 2.0;// difference from center of onPoint index along Y
 
-                    double changedX = rotx * cosTheta + roty * sinTheta + centerX;
+                    double changedX = rotx * cosTheta + roty * sinTheta + centerX;// new location difference from center
                     double changedY = -rotx * sinTheta + roty * cosTheta + center_alongY;
 
-                    int x = changedX;
+                    int x = changedX;//house 
                     int y = changedY;
-                    int x1 = x + 1;
+                    int x1 = x + 1;//house neighbour you got it
                     int y1 = y + 1;
 
                     if (x >= 0 && x1 < Col && y >= 0 && y1 < Row) {
-                        double locX1 = changedX - x;
+                        double locX1 = changedX - x;// toget new values of rotated image
                         double locX0 = 1.0 - locX1;
                         double locY1 = changedY - y;
                         double locY0 = 1.0 - locY1;
@@ -416,20 +425,23 @@ struct Image
             
         
     }
-    // Assuming ImageData represents the image as a 2D array
+   
 
 // Apply a general linear filter to the image
     void LinearFilter(int input) {
         
-        double kernel[3][3];
+        double Filter_Kernel[3][3];// filter Filter_Kernel 3x3
         
         if (input == 1 )
         {
+            //reading sharpen kernel 
+            // 0 -1 0 -1 5 -1 0 -1 0 from file
+
             ifstream Sharpen("D:/designs/sharpen.txt");
             if (Sharpen.is_open()) {
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
-                        if (!(Sharpen >> kernel[i][j])) {
+                        if (!(Sharpen >> Filter_Kernel[i][j])) {
                             // error accordingly
                         }
                     }
@@ -439,11 +451,15 @@ struct Image
         }
         else if (input == 2 )
         {
+            //reading blur kernel from file 
+            //  0.1 0.1 0.1
+            //  0.1 0.1 0.1
+            //  0.1 0.1 0.1 
             ifstream Blur("D:/designs/blur.txt");
             if (Blur.is_open()) {
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
-                        if (!(Blur >> kernel[i][j])) {
+                        if (!(Blur >> Filter_Kernel[i][j])) {
                             //ngl
                         }
                     }
@@ -452,11 +468,15 @@ struct Image
             Blur.close(); // Close the file after reading
         }else if (input == 3 )
         {
+            //reading edge detection filter from file
+            // -1 -1 -1
+            //  -1 8 -1
+            //  -1 -1 -1 
             ifstream Edge("D:/designs/edge.txt");
             if (Edge.is_open()) {
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
-                        if (!(Edge >> kernel[i][j])) {
+                        if (!(Edge >> Filter_Kernel[i][j])) {
                             // brb
                         }
                     }
@@ -465,11 +485,15 @@ struct Image
             Edge.close(); // Close the file after reading
         }else if (input == 4 )
         {
+            // negative filter reading from file
+            // -1 -1 -1 
+            // 0 0 0 
+            // 1 1 1 
             ifstream Neg("D:/designs/negative.txt");
             if (Neg.is_open()) {
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
-                        if (!(Neg >> kernel[i][j])) {
+                        if (!(Neg >> Filter_Kernel[i][j])) {
                            //
                         }
                     }
@@ -479,25 +503,25 @@ struct Image
         }
         
         
-        // Printing the contents of the kernel array
+        // Printing the contents of the Filter_Kernel array
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                cout << kernel[i][j] << " ";
+                cout << Filter_Kernel[i][j] << " ";
             }
             cout << endl;
         }
         vector<vector<int>> temporary;
         temporary.clear();
-        temporary.resize(Row, vector<int>(Col, 0));
+        temporary.resize(Row, vector<int>(Col, 0));// outline assigning of size
       
         for (int y = 1; y < Row - 1; y++) {
             for (int x = 1; x < Col - 1; x++) {
                 float sum = 0.0;
 
-                // Convolution: Multiply and accumulate pixel values based on the filter kernel
+                // Convolution: Multiply and accumulate pixel values based on the filter Filter_Kernel
                 for (int i = -1; i <= 1; i++) {
                     for (int j = -1; j <= 1; j++) {
-                        sum += Data[y + i][x + j] * kernel[i + 1][j + 1];
+                        sum += Data[y + i][x + j] * Filter_Kernel[i + 1][j + 1];// getting kernel fitted into image
                     }
                 }
                 temporary[y][x] = sum;
@@ -506,25 +530,26 @@ struct Image
         }
         for (int y = 1; y < Row - 1; ++y) {
             for (int x = 1; x < Col - 1; ++x) {
-                Data[y][x] = temporary[y][x];
+                Data[y][x] = temporary[y][x];// replacing
             }
         }
 
     }
     void ScaleUp(vector<vector<int>>& Data, int factor) {
-        int height = Data.size();
-        int width = Data[0].size();
+        int height = Data.size();// rows
+        int width = Data[0].size();//cols
 
-        int scaledH = height * factor;
-        int scaledW = width * factor;
-
+        int scaledH = height * factor;//new rows
+        int scaledW = width * factor;// new cols
+        // new vector to save img
         vector<vector<int>> scaledData(scaledH, vector<int>(scaledW, 0));
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 for (int p = 0; p < factor; p++) {
                     for (int q = 0; q < factor; q++) {
-                        scaledData[i * factor + p][j * factor + q] = Data[i][j];
+                         scaledData[i * factor + p][j * factor + q] = Data[i][j];// scaling image
+                        //row pixel getting bigger] also col one
                     }
                 }
             }
@@ -537,12 +562,13 @@ struct Image
     
 
     void ScaleDown(vector<vector<int>>& Data, int factor) {
-        int height = Data.size();
-        int width = Data[0].size();
+        int height = Data.size();//row
+        int width = Data[0].size();//col
 
-        int scaledH = height / factor;
-        int scaledW = width / factor;
+        int scaledH = height / factor;//new size of row
+        int scaledW = width / factor;//ew size of col for downing
 
+        //vector for replacement
         vector<vector<int>> scaledData(scaledH, vector<int>(scaledW, 0));
 
         for (int i = 0; i < scaledH; i++) {
@@ -575,12 +601,14 @@ struct Image
 
 
 
-
+    //SD not getting called  also SU if i have not deleted yet
     void SD(int factor) {
         ScaleDown(Data, factor);
     }
     void Tobinary() {
         // thresholding technique
+        //check if any value if greater than that thres val then make the pixel 1 
+        //else 0
         int threshold = 130;
         for (int i = 0; i < Row; i++)
         {
@@ -590,15 +618,15 @@ struct Image
         }
     }
     void TI(vector<vector<int>>& Data, int dx, int dy) {
-        int height = Data.size();
-        int width = Data[0].size();
+        int height = Data.size();//row
+        int width = Data[0].size();//col
 
         vector<vector<int>> translatedImage(height, vector<int>(width, 0));
 
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
-                int new_i = i + dy;
-                int new_j = j + dx;
+                int new_i = i + dy;// changed value of x 
+                int new_j = j + dx;// and y
 
                 // Check if the new position is within the image bounds
                 if (new_i >= 0 && new_i < height && new_j >= 0 && new_j < width) {
@@ -690,8 +718,8 @@ struct Image
 
         Data = Combination; // Assign the combined image to Data
     }
-
-   
+    
+    
 
 
 };
@@ -797,6 +825,9 @@ int main()
             int multi;
             cin >> multi;
             Images[ActiveImage].ScaleUp(Images[ActiveImage].Data,multi);
+            Images[ActiveImage].Row *=multi ;
+            Images[ActiveImage].Col *= multi;
+
             
             cout << "You need to save the changes " << endl;
         }else if (8 == choice) {
@@ -804,6 +835,8 @@ int main()
             int Reducer;
             cin >> Reducer;
             Images[ActiveImage].ScaleDown(Images[ActiveImage].Data,Reducer);
+            Images[ActiveImage].Row /= Reducer;
+            Images[ActiveImage].Col /= Reducer;
           
             
             
